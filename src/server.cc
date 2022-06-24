@@ -10,7 +10,7 @@ void sum(const tl::request& req, int x, int y) {
 
 int main(int argc, char** argv) {
 
-    tl::engine myEngine("tcp://127.0.0.1:1234", THALLIUM_SERVER_MODE);
+    tl::engine myEngine("verbs", THALLIUM_SERVER_MODE);
     std::cout << "Server running at address " << myEngine.self() << std::endl;
     myEngine.define("sum", sum);
 
