@@ -1,9 +1,24 @@
 #include <iostream>
+#include <chrono>
+
 #include <thallium.hpp>
 #include <thallium/serialization/stl/string.hpp>
 #include <thallium/serialization/stl/vector.hpp>
 
 namespace tl = thallium;
+
+
+class MeasureExecutionTime{
+    private:
+        const std::chrono::steady_clock::time_point begin;
+        const std::string caller;
+    public:
+        MeasureExecutionTime(const std::string& caller): caller(caller),begin(std::chrono::steady_clock::now()){}
+        ~MeasureExecutionTime(){
+            const auto duration=std::chrono::steady_clock::now()-begin;
+            std::cout <<"client: "<< caller << " : "<<(double)std::chrono::duration_cast<std::chrono::microseconds>(duration).count()/1000<<" ms\n";
+        }
+};
 
 int main(int argc, char** argv) {
     if(argc != 2) {
@@ -21,8 +36,11 @@ int main(int argc, char** argv) {
     tl::engine myEngine("verbs", THALLIUM_CLIENT_MODE);
     tl::remote_procedure sum = myEngine.define("sum");
     tl::endpoint server = myEngine.lookup(argv[1]);
-    int ret = sum.on(server)(num_rows, num_cols, types, data_buff_sizes, offset_buff_sizes);
-    std::cout << "Server answered " << ret << std::endl;
+    {
+        MeasureExecutionTime t("rpc");
+        int ret = sum.on(server)(num_rows, num_cols, types, data_buff_sizes, offset_buff_sizes);
+        std::cout << "Server answered " << ret << std::endl;
+    }
 
     return 0;
 }
