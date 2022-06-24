@@ -6,12 +6,12 @@
 namespace tl = thallium;
 
 std::function<void(const tl::request&, int&, int&, std::vector<int>&, std::vector<int64_t>&, std::vector<int64_t>&)> sum =
-        [&](const tl::request& req, int& x, int& y, std::vector<int>& types, std::vector<int64_t>& data_buff_sizes, std::vector<int64_t>& offset_buff_sizes) {        
+        [](const tl::request& req, int& x, int& y, std::vector<int>& types, std::vector<int64_t>& data_buff_sizes, std::vector<int64_t>& offset_buff_sizes) {        
         req.respond(x+y);
     };
 
 std::function<void(const tl::request&, int&, int&)> sum_light =
-        [&](const tl::request& req, int& x, int& y) {        
+        [](const tl::request& req, int& x, int& y) {        
         req.respond(x+y);
     };
 
