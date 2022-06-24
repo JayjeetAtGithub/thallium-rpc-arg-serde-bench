@@ -34,13 +34,20 @@ int main(int argc, char** argv) {
 
 
     tl::engine myEngine("verbs", THALLIUM_CLIENT_MODE);
+    
     tl::remote_procedure sum = myEngine.define("sum");
+    tl::remote_procedure sum_light = myEngine.define("sum_light");
+
     tl::endpoint server = myEngine.lookup(argv[1]);
     {
-        MeasureExecutionTime t("rpc");
+        MeasureExecutionTime t("sum");
         int ret = sum.on(server)(num_rows, num_cols, types, data_buff_sizes, offset_buff_sizes);
         std::cout << "Server answered " << ret << std::endl;
     }
-
+    {
+        MeasureExecutionTime t("sum_light");
+        int ret = sum_light.on(server)(num_rows, num_cols);
+        std::cout << "Server answered " << ret << std::endl;
+    }
     return 0;
 }
